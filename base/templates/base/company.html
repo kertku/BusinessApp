@@ -2,7 +2,18 @@
 
 {% block content %}
 
-    <h2>{{ company.name }}</h2>
+ <div class="card" style="width: 18rem;">
+  <div class="card-header">
+    {{ company.name }}
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Registry number: {{ company.registry_number }} </li>
+    <li class="list-group-item">Established: {{ company.establishment_date }} </li>
+    <li class="list-group-item">Total capital : {{ company.total_capital }}</li>
+  </ul>
+</div>
+
+
 
 
 
