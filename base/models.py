@@ -32,7 +32,6 @@ class BusinessUser(models.Model):
 
 
 class Owner(models.Model):
-    is_founder = models.BooleanField()
     is_business_user = models.BooleanField()
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     business_user = models.ForeignKey(BusinessUser, null=True, blank=True, on_delete=models.CASCADE,
@@ -46,6 +45,7 @@ class Owner(models.Model):
 
 
 class Ownership(models.Model):
+    is_founder = models.BooleanField()
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
     capital_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
