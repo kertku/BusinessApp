@@ -3,15 +3,15 @@ from django.core.validators import MinValueValidator, MaxValueValidator, MaxLeng
 from django.db import models
 
 
-class Business(models.Model):
-    business_name = models.CharField(max_length=100,
-                                     validators=[MaxLengthValidator(100), MinLengthValidator(3)])
+class Company(models.Model):
+    name = models.CharField(max_length=100,
+                            validators=[MaxLengthValidator(100), MinLengthValidator(3)])
     registry_number = models.PositiveIntegerField(validators=[MinValueValidator(1000000), MaxValueValidator(9999999)])
     establishment_date = models.DateField(validators=[MaxValueValidator(date.today())])
     total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
 
     def __str__(self):
-        return self.business_name
+        return self.name
 
 
 class User(models.Model):
@@ -46,9 +46,9 @@ class Owner(models.Model):
 
 
 class Ownership(models.Model):
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
     capital_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
-        unique_together = ["business", "owner"]
+        unique_together = ["company", "owner"]
