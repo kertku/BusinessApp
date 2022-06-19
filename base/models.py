@@ -50,5 +50,8 @@ class Ownership(models.Model):
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
     capital_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
+    def __str__(self):
+        return str(self.owner)
+
     class Meta:
         unique_together = ["company", "owner"]
