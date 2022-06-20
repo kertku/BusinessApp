@@ -31,27 +31,19 @@ class BusinessUser(models.Model):
         return self.business_user_name
 
 
-class Owner(models.Model):
-    is_business_user = models.BooleanField()
+class Ownership(models.Model):
+    is_founder = models.BooleanField()
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    capital_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     business_user = models.ForeignKey(BusinessUser, null=True, blank=True, on_delete=models.CASCADE,
                                       related_name='business_user')
 
     def __str__(self):
-        if self.is_business_user:
-            return str(self.business_user)
+        if self.business_user:
+            return str(f"{self.business_user} - {self.company}")
         else:
-            return str(self.user)
-
-
-class Ownership(models.Model):
-    is_founder = models.BooleanField()
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
-    capital_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-
-    def __str__(self):
-        return str(self.owner)
+            return str(f"{self.business_user} - {self.company}")
 
     class Meta:
-        unique_together = ["company", "owner"]
+        unique_together = ["company", "user", "business_user"]
