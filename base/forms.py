@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from base.models import Company, User, Ownership
+from base.models import Company, User, Ownership, BusinessUser
 from django import forms
 
 
@@ -32,4 +32,14 @@ class OwnershipForm(ModelForm):
         fields = ('capital_size',)
         widgets = {
             "capital_size": forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class BusinessUserForm(ModelForm):
+    class Meta:
+        model = BusinessUser
+        fields = ('business_user_name', 'registry_number')
+        widgets = {
+            "business_user_name": forms.TextInput(attrs={'class': 'form-control'}),
+            "registry_number": forms.NumberInput(attrs={'class': 'form-control'})
         }
