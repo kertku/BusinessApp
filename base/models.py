@@ -3,19 +3,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator, MaxLeng
 from django.db import models
 
 
-class Company(models.Model):
-    name = models.CharField(max_length=100,
-                            validators=[MaxLengthValidator(100), MinLengthValidator(3)])
-    registry_number = models.PositiveIntegerField(validators=[MinValueValidator(1000000), MaxValueValidator(9999999)])
-    establishment_date = models.DateField(validators=[MaxValueValidator(date.today())])
-    total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-
 class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -33,7 +20,23 @@ class BusinessUser(models.Model):
         return self.business_user_name
 
 
+class Company(models.Model):
+    name = models.CharField(max_length=100,
+                            validators=[MaxLengthValidator(100), MinLengthValidator(3)])
+    registry_number = models.PositiveIntegerField(validators=[MinValueValidator(1000000), MaxValueValidator(9999999)])
+    establishment_date = models.DateField(validators=[MaxValueValidator(date.today())])
+    total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
+    business_owners = models.ManyToManyField(BusinessUser, through='Ownership')
+    individual_owners = models.ManyToManyField(User, through='Ownership')
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Ownership(models.Model):
+    is_business_user = models.BooleanField()
     is_founder = models.BooleanField()
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     capital_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])

@@ -19,26 +19,30 @@
             <div class="card-header">
                 Owners:
             </div>
-            {% for ownership in ownerships %}
-                {% if  ownership.owner.business_user == None %}
-                    <li class="list-group-item"><b>Name: {{ ownership.owner }} </b></li>
-                    <li class="list-group-item">Identification code: {{ ownership.owner.identification_code }} </li>
-                {% else %}
-                    <li class="list-group-item"><b>Name: {{ ownership.owner }}</b></li>
-                    <li class="list-group-item">Registry code: {{ ownership.owner.registry_number }} </li>
-                {% endif %}
+            {% for individual_owner in individual_owners %}
+                <li class="list-group-item"><b>Name: {{ individual_owner }} </b></li>
+                <li class="list-group-item">Identification code: {{ individual_owner.identification_code }} </li>
+                <li class="list-group-item"> Share capital: {{ ownership.share_capital }} €</li>
+                <li class="list-group-item">Is owner: {{ individual_owner.identification_code }} </li>
 
+            {% endfor %}
+
+            {% for business_owner  in business_owners %}
+                <li class="list-group-item"><b>Name: {{ business_owner.business_user_name }}</b></li>
+                <li class="list-group-item">Registry code: {{ business_owner.registry_number }} </li>
+               <li class="list-group-item"> Share capital: {{ individual_owner.identification_code }} €</li>
+                <li class="list-group-item">Identification code: {{ individual_owner.identification_code }} </li>
             {% endfor %}
         </ul>
 
         <input type="radio" onchange="hide_business_user(this)" name="aorb" checked>Private user|
         <input type="radio" onchange="hide_user(this)" name="aorb">Business User
-       {% include 'base/partial_views/_partial_businessuser_form.html' %}
+        {% include 'base/partial_views/_partial_businessuser_form.html' %}
         <div id="user_form" style="visibility:hidden">
             {% include 'base/partial_views/_partial_businessuser_form.html' %}
         </div>
 
-    </div>
+    </div>sudo
 
 
 
