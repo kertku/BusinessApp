@@ -10,6 +10,7 @@ def business(request):
 
 
 def company(request, pk):
+    company_form = CompanyForm()
     company_object = Company.objects.get(pk=pk)
     ownerships = Ownership.objects.filter(company_id=pk).all()
     context = {"company": company_object, "ownerships": ownerships}

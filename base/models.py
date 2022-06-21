@@ -9,6 +9,8 @@ class Company(models.Model):
     registry_number = models.PositiveIntegerField(validators=[MinValueValidator(1000000), MaxValueValidator(9999999)])
     establishment_date = models.DateField(validators=[MaxValueValidator(date.today())])
     total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -38,10 +40,12 @@ class Ownership(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     business_user = models.ForeignKey(BusinessUser, null=True, blank=True, on_delete=models.CASCADE,
                                       related_name='business_user')
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        if self.business_user:
-            return str(f"{self.business_user} - {self.company}")
+        if self.business_user is None:
+            return str(f"{self.user} - {self.company}")
         else:
             return str(f"{self.business_user} - {self.company}")
 

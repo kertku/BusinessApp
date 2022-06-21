@@ -1,9 +1,17 @@
+{% extends 'main.html' %}
+
+
+
+{% block content %}
+
 <div id="user_form">
-      <div class="form-group">
+    <div class="form-group">
         <form method="post" action="">
             {% csrf_token %}
-            {{ business_user.as_p }}
-            <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+            {{ company_form }}
+            <button class="btn btn-primary" type="submit" value="Submit">Submit12</button>
         </form>
     </div>
 </div>
+
+{% endblock content %}
