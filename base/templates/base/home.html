@@ -13,7 +13,8 @@
                     <tbody>
                     {% for entrie in  new_entries %}
                         <tr>
-                        <td><a href="company/{{ entrie.id }}/">{{ entrie.name }}</a></td>
+                        <td><a href="{% url 'company'  entrie.id %}">{{ entrie.name }}</a></td>
+
 
                     {% endfor %}
                     </tr>
