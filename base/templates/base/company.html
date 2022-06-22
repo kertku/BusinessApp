@@ -2,9 +2,9 @@
 
 {% block content %}
 
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="width: 30rem;">
         <div class="card-header">
-            {{ company.name }}
+            <b>{{ company.name }}</b>
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Registry number: {{ company.registry_number }} </li>
@@ -15,35 +15,33 @@
         <div>{{ company.company.registry_number }}</div>
 
         <ul class="list-group list-group-flush">
-            <p class="card" style="width: 18rem;">
+
             <div class="card-header">
-                Owners:
+                <b> Owners:</b>
             </div>
-            {% for individual_owner in individual_owners %}
-                <li class="list-group-item"><b>Name: {{ individual_owner }} </b></li>
-                <li class="list-group-item">Identification code: {{ individual_owner.identification_code }} </li>
-                <li class="list-group-item"> Share capital: {{ ownership.share_capital }} €</li>
-                <li class="list-group-item">Is owner: {{ individual_owner.identification_code }} </li>
 
-            {% endfor %}
+            {% for detail in owning_details %}
+                {% if detail.business_user %}
+                    <li class="list-group-item"><b>Company: {{ detail.business_user.business_user_name }}</b></li>
+                    <li class="list-group-item">Registry code: {{ detail.business_user.registry_number }}</li>
+                {% else %}
+                    <li class="list-group-item"><b>Individual: {{ detail.user }}</b></li>
+                    <li class="list-group-item">Identification code: {{ detail.user.identification_code }}</li>
+                {% endif %}
+                <li class="list-group-item"> Share capital: {{ detail.capital_size }} €</li>
+                {% if is_founder %}
+                    <li class="list-group-item">The owner is a founding member.</li>
 
-            {% for business_owner  in business_owners %}
-                <li class="list-group-item"><b>Name: {{ business_owner.business_user_name }}</b></li>
-                <li class="list-group-item">Registry code: {{ business_owner.registry_number }} </li>
-               <li class="list-group-item"> Share capital: {{ individual_owner.identification_code }} €</li>
-                <li class="list-group-item">Identification code: {{ individual_owner.identification_code }} </li>
+                {% else %}
+                    <li class="list-group-item">The owner is not a founding member.</li>
+
+                {% endif %}
+
             {% endfor %}
         </ul>
 
-        <input type="radio" onchange="hide_business_user(this)" name="aorb" checked>Private user|
-        <input type="radio" onchange="hide_user(this)" name="aorb">Business User
-        {% include 'base/partial_views/_partial_businessuser_form.html' %}
-        <div id="user_form" style="visibility:hidden">
-            {% include 'base/partial_views/_partial_businessuser_form.html' %}
-        </div>
 
-    </div>sudo
-
+    </div>
 
 
 

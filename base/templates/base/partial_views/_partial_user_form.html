@@ -1,14 +1,11 @@
-{% extends 'main.html' %}
-
-
-
 {% block content %}
 
-<div id="user_form">
+<div id="user_form" style="visibility:visible">
     <div class="form-group">
         <form method="post" action="">
+            Tere
             {% csrf_token %}
-            {{ company_form }}
+            {{ user_form.as_p }}
             <button class="btn btn-primary" type="submit" value="Submit">Submit12</button>
         </form>
     </div>
