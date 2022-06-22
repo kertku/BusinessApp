@@ -25,7 +25,6 @@ def company(request, pk):
 
 def company_form(request):
     company_form = CompanyForm()
-
     if request.method == 'POST':
         company_form = CompanyForm(request.POST)
         if company_form.is_valid():
@@ -36,17 +35,9 @@ def company_form(request):
 
 
 def search(request):
-    search_result_company = None
-    search_result_owner = None
     q = request.GET.get('q') if request.GET.get('q') is not None else ''
-    r = request.GET.get('r') if request.GET.get('q') is not None else ''
-
-    if r == "company":
-        print("ell")
-        search_result_company = Company.objects.filter(Q(name__icontains=q) | Q(registry_number__icontains=q))
-        print(search_result_company)
-    if r is "owner":
-        search_result_owner = Company.objects.filter(Q(name__icontains=q) | Q(registry_number__icontains=q))
-
-    context = {"search_result_company": search_result_company, "search_result_owner": search_result_owner, "q": q}
+    search_result = Company.objects.filter(
+        Q(name__icontains=q) | Q(registry_number__icontains=q) | Q(individual_owners__first_name__icontains=q) | Q(
+            individual_owners__identification_code__icontains=q))
+    context = {"search_result": search_result, "q": q}
     return render(request, "base/search.html", context)

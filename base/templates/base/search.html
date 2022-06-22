@@ -2,15 +2,15 @@
 {% block content %}
     {% include '__back_to_home_partial.html' %}
     <div class="container">
-        {% if search_result_company %}
+
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">Search results for a {{ q }}</th>
+                    <th scope="col">Search results for a {{ q }}...</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for result in  search_result_company %}
+                {% for result in  search_result %}
                     <tr>
                     <td><a href="{% url 'company'  result.id %}">{{ result.name }} -
                         reg.{{ result.registry_number }}</a></td>
@@ -18,7 +18,7 @@
                 </tr>
                 </tbody>
             </table>
-        {% endif %}
+
 
 
     </div>
