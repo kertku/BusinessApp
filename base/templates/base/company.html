@@ -9,7 +9,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Registry number: {{ company.registry_number }} </li>
             <li class="list-group-item">Established: {{ company.establishment_date }} </li>
-            <li class="list-group-item">Total capital : {{ company.total_capital }}</li>
+            <li class="list-group-item">Total capital : {{ company.total_capital }} €</li>
 
         </ul>
         <div>{{ company.company.registry_number }}</div>
@@ -29,7 +29,7 @@
                     <li class="list-group-item">Identification code: {{ detail.user.identification_code }}</li>
                 {% endif %}
                 <li class="list-group-item"> Share capital: {{ detail.capital_size }} €</li>
-                {% if is_founder %}
+                {% if detail.is_founder %}
                     <li class="list-group-item">The owner is a founding member.</li>
 
                 {% else %}
