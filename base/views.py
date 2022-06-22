@@ -4,10 +4,11 @@ from base.forms import CompanyForm, UserForm, OwnershipForm
 from base.models import Company, Ownership
 
 
-def business(request):
-    businesses = Company.objects.all()
-    context = {"businesses": businesses}
-    return render(request, "base/businesses.html", context)
+def home(request):
+    new_entries = Company.objects.all()[:10]
+    new_updates = Company.objects.order_by("-updated")[:10]
+    context = {"new_entries": new_entries, "new_updates": new_updates}
+    return render(request, "base/home.html", context)
 
 
 def company(request, pk):
