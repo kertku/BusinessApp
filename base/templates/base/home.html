@@ -2,6 +2,7 @@
 {% block content %}
 
     <div class="container">
+
         <div class="row">
             <div class="col-sm">
                 <table class="table table-striped">
@@ -14,11 +15,8 @@
                     {% for entrie in  new_entries %}
                         <tr>
                         <td><a href="{% url 'company'  entrie.id %}">{{ entrie.name }}</a></td>
-
-
                     {% endfor %}
                     </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -54,7 +52,7 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
+
     </div>
 {% endblock %}

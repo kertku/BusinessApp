@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, redirect
 from base.forms import CompanyForm, UserForm, OwnershipForm
@@ -34,12 +35,18 @@ def company_form(request):
     return render(request, "base/company_form.html", context)
 
 
-def user_partial(request):
-    user_form = UserForm()
-    if request.method == 'POST':
-        user_form = UserForm(request.POST)
-        if user_form.is_valid():
-            new_user = user_form.save()
-            return redirect("company", pk=new_user.id)
-    context = {"user_form": user_form, }
-    return render(request, "base/partial_views/_partial_user_form.html", context)
+def search(request):
+    search_result_company = None
+    search_result_owner = None
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
+    r = request.GET.get('r') if request.GET.get('q') is not None else ''
+
+    if r == "company":
+        print("ell")
+        search_result_company = Company.objects.filter(Q(name__icontains=q) | Q(registry_number__icontains=q))
+        print(search_result_company)
+    if r is "owner":
+        search_result_owner = Company.objects.filter(Q(name__icontains=q) | Q(registry_number__icontains=q))
+
+    context = {"search_result_company": search_result_company, "search_result_owner": search_result_owner, "q": q}
+    return render(request, "base/search.html", context)

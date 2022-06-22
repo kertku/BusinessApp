@@ -1,5 +1,6 @@
 {% extends 'main.html' %}
 {% block content %}
+    {% include '__back_to_home_partial.html' %}
     <div class="form-group">
         <form method="post" action="">
             {% csrf_token %}

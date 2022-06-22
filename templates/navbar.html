@@ -1,11 +1,20 @@
 <div>
-   <nav class="navbar bg-light mb-5">
-  <div class="container-fluid">
-    <a class="navbar-brand">Company register App</a>
-    <form class="d-flex" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
-  </div>
-</nav>
+    <nav class="navbar bg-light mb-5">
+        <div class="container-fluid">
+            <a href="{% url 'home' %}" class="navbar-brand">Company Register App</a>
+            <form class="d-flex" role="search" method="get" action="{% url 'search' %}">
+                <input class="form-control me-2" type="search" placeholder="Search companies ..." aria-label="Search"
+                       name="q">
+                <button class="btn btn-outline-success me-2" type="submit">Search</button>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="r" id="inlineRadio1" value="company" checked>
+                    <label class="form-check-label" for="inlineRadio1">company</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="r" id="inlineRadio2" value="owner">
+                    <label class="form-check-label" for="inlineRadio2">owner</label>
+                </div>
+            </form>
+        </div>
+    </nav>
 </div>
