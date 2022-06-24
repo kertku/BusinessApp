@@ -3,18 +3,6 @@ from base.models import Company, User, Ownership, BusinessUser
 from django import forms
 
 
-class CompanyForm(ModelForm):
-    class Meta:
-        model = Company
-        fields = ("name", "registry_number", "establishment_date", "total_capital")
-        widgets = {
-            "name": forms.TextInput(attrs={'class': 'form-control'}),
-            "registry_number": forms.NumberInput(attrs={'class': 'form-control'}),
-            "establishment_date": forms.DateInput(attrs={'class': 'form-control'}),
-            "total_capital": forms.NumberInput(attrs={'class': 'form-control'})
-        }
-
-
 class UserForm(ModelForm):
     class Meta:
         model = User
@@ -42,4 +30,27 @@ class BusinessUserForm(ModelForm):
         widgets = {
             "business_user_name": forms.TextInput(attrs={'class': 'form-control'}),
             "registry_number": forms.NumberInput(attrs={'class': 'form-control'})
+        }
+
+
+class CreateCompany(forms.ModelForm):
+    individual_owners = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+
+    )
+    business_owners = forms.ModelMultipleChoiceField(
+        queryset=BusinessUser.objects.all(),
+        widget=forms.CheckboxSelectMultiple()
+    )
+
+    class Meta:
+        model = Company
+
+        fields = ("name", "registry_number", "establishment_date", "total_capital")
+        widgets = {
+            "name": forms.TextInput(attrs={'class': 'form-control'}),
+            "registry_number": forms.NumberInput(attrs={'class': 'form-control'}),
+            "establishment_date": forms.DateInput(attrs={'class': 'form-control'}),
+            "total_capital": forms.NumberInput(attrs={'class': 'form-control'})
         }

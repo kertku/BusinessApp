@@ -1,7 +1,8 @@
 from django.db.models import Q
+from django import forms
 from django.http import Http404
 from django.shortcuts import render, redirect
-from base.forms import CompanyForm, UserForm, OwnershipForm
+from base.forms import  CreateCompany
 from base.models import Company, Ownership
 
 
@@ -13,7 +14,6 @@ def home(request):
 
 
 def company(request, pk):
-    company_form = CompanyForm()
     try:
         company_object = Company.objects.get(pk=pk)
         owning_details = Ownership.objects.filter(company__id=pk)
@@ -24,11 +24,20 @@ def company(request, pk):
 
 
 def company_form(request):
-    company_form = CompanyForm()
+    company_form = CreateCompany()
     if request.method == 'POST':
-        company_form = CompanyForm(request.POST)
+        company_form = CreateCompany(request.POST)
         if company_form.is_valid():
+            owners = company_form.cleaned_data.get('individual_owners')
+            business_owners = company_form.cleaned_data.get('business_owners')
             new_company = company_form.save()
+            for owner in owners:
+                new_company.individual_owners.add(owner, through_defaults={"capital_size": 100, "is_founder": True,
+                                                                           "is_business_user": False})
+            for business_owner in business_owners:
+                new_company.business_owners.add(business_owner, through_defaults={"capital_size": 100, "is_founder": True,
+                                                                              "is_business_user": True})
+
             return redirect("company", pk=new_company.id)
     context = {"company_form": company_form, }
     return render(request, "base/company_form.html", context)

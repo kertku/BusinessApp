@@ -1,10 +1,11 @@
 {% extends 'main.html' %}
 {% block content %}
     {% include '__back_to_home_partial.html' %}
-    <div class="form-group">
+    <div class="form-group w-50 p-3">
         <form method="post" action="">
             {% csrf_token %}
             {{ company_form.as_p }}
+            {{ add_company_form.as_p }}
             <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
         </form>
     </div>
