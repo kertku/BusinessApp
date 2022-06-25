@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from base.models import Company, User, Ownership, BusinessUser
 from django import forms
+from base.widget import DatePickerInput
 
 
 class UserForm(ModelForm):
@@ -51,6 +52,6 @@ class CreateCompany(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(attrs={'class': 'form-control'}),
             "registry_number": forms.NumberInput(attrs={'class': 'form-control'}),
-            "establishment_date": forms.DateInput(attrs={'class': 'form-control'}),
+            "establishment_date": DatePickerInput(attrs={'class': 'form-control'}),
             "total_capital": forms.NumberInput(attrs={'class': 'form-control'})
         }
