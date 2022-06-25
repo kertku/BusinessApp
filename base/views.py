@@ -2,7 +2,9 @@ from django.db.models import Q
 from django import forms
 from django.http import Http404
 from django.shortcuts import render, redirect
-from base.forms import  CreateCompany
+from django.views import generic
+
+from base.forms import CreateCompany
 from base.models import Company, Ownership
 
 
@@ -35,8 +37,9 @@ def company_form(request):
                 new_company.individual_owners.add(owner, through_defaults={"capital_size": 100, "is_founder": True,
                                                                            "is_business_user": False})
             for business_owner in business_owners:
-                new_company.business_owners.add(business_owner, through_defaults={"capital_size": 100, "is_founder": True,
-                                                                              "is_business_user": True})
+                new_company.business_owners.add(business_owner,
+                                                through_defaults={"capital_size": 100, "is_founder": True,
+                                                                  "is_business_user": True})
 
             return redirect("company", pk=new_company.id)
     context = {"company_form": company_form, }

@@ -1,11 +1,7 @@
 from datetime import date
-from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator, MinLengthValidator
+from django.core.validators import MinValueValidator, MaxLengthValidator, MinLengthValidator
 from django.db import models
-
-
-class Validation:
-    registry_validation_message = "Registry number must contain seven digits!"
-    registration_date_validation_message = "Registration date can not be future date!"
+from base.validators import Validators
 
 
 class User(models.Model):
@@ -17,25 +13,19 @@ class User(models.Model):
         return "{} {}".format(self.first_name, self.last_name)
 
 
-class BusinessUser(models.Model, Validation):
+class BusinessUser(models.Model):
     business_user_name = models.CharField(max_length=100)
-    registry_number = models.PositiveIntegerField(
-        validators=[MinValueValidator(1000000, message=Validation.registry_validation_message),
-                    MaxValueValidator(9999999, message=Validation.registry_validation_message)])
+    registry_number = models.PositiveIntegerField(validators=[Validators.validate_correct_registry_number])
 
     def __str__(self):
         return self.business_user_name
 
 
-class Company(models.Model, Validation):
+class Company(models.Model):
     name = models.CharField(max_length=100,
                             validators=[MaxLengthValidator(100), MinLengthValidator(3)])
-    registry_number = models.PositiveIntegerField(
-        validators=[MinValueValidator(1000000, message=Validation.registry_validation_message),
-                    MaxValueValidator(
-                        9999999, message=Validation.registry_validation_message)])
-    establishment_date = models.DateField(
-        validators=[MaxValueValidator(date.today(), message=Validation.registration_date_validation_message)])
+    registry_number = models.PositiveIntegerField(validators=[Validators.validate_correct_registry_number])
+    establishment_date = models.DateField(validators=[Validators.validate_not_future_date])
     total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
     business_owners = models.ManyToManyField(BusinessUser, through='Ownership')
     individual_owners = models.ManyToManyField(User, through='Ownership')

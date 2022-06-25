@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <a href="{% url 'home' %}" class="navbar-brand">Company Register App</a>
     <form class="d-flex" role="search" method="get" action="{% url 'search' %}">
-      <input class="form-control me-2" type="search" placeholder="Search companies ..." aria-label="Search" name="q">
+      <input class="form-control me-2" value="{{ q }}" type="search" placeholder="Search companies ..."  aria-label="Search" name="q">
       <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 
