@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, formset_factory
 from base.models import Company, User, Ownership, BusinessUser
 from django import forms
 from base.widget import DatePickerInput
@@ -18,9 +18,10 @@ class UserForm(ModelForm):
 class OwnershipForm(ModelForm):
     class Meta:
         model = Ownership
-        fields = ('capital_size',)
+        fields = ('capital_size', 'user',)
         widgets = {
-            "capital_size": forms.NumberInput(attrs={'class': 'form-control'}),
+            'user': forms.Select(attrs={'class': 'form-group row'}),
+            "capital_size": forms.NumberInput(attrs={'class': 'form-group row'}),
         }
 
 
@@ -35,19 +36,8 @@ class BusinessUserForm(ModelForm):
 
 
 class CreateCompany(forms.ModelForm):
-    individual_owners = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        widget=forms.CheckboxSelectMultiple(),
-
-    )
-    business_owners = forms.ModelMultipleChoiceField(
-        queryset=BusinessUser.objects.all(),
-        widget=forms.CheckboxSelectMultiple()
-    )
-
     class Meta:
         model = Company
-
         fields = ("name", "registry_number", "establishment_date", "total_capital")
         widgets = {
             "name": forms.TextInput(attrs={'class': 'form-control'}),
