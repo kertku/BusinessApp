@@ -1,17 +1,7 @@
 from datetime import date
-from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator, MinLengthValidator
+from django.core.validators import MinValueValidator, MaxLengthValidator, MinLengthValidator
 from django.db import models
-
-
-class Company(models.Model):
-    name = models.CharField(max_length=100,
-                            validators=[MaxLengthValidator(100), MinLengthValidator(3)])
-    registry_number = models.PositiveIntegerField(validators=[MinValueValidator(1000000), MaxValueValidator(9999999)])
-    establishment_date = models.DateField(validators=[MaxValueValidator(date.today())])
-    total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
-
-    def __str__(self):
-        return self.name
+from base.validators import Validators
 
 
 class User(models.Model):
@@ -25,33 +15,46 @@ class User(models.Model):
 
 class BusinessUser(models.Model):
     business_user_name = models.CharField(max_length=100)
-    registry_number = models.PositiveIntegerField(validators=[MinValueValidator(1000000), MaxValueValidator(9999999)])
+    registry_number = models.PositiveIntegerField(validators=[Validators.validate_correct_registry_number])
 
     def __str__(self):
         return self.business_user_name
 
 
-class Owner(models.Model):
-    is_business_user = models.BooleanField()
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    business_user = models.ForeignKey(BusinessUser, null=True, blank=True, on_delete=models.CASCADE,
-                                      related_name='business_user')
+class Company(models.Model):
+    name = models.CharField(max_length=100,
+                            validators=[MaxLengthValidator(100), MinLengthValidator(3)])
+    registry_number = models.PositiveIntegerField(validators=[Validators.validate_correct_registry_number])
+    establishment_date = models.DateField(validators=[Validators.validate_not_future_date])
+    total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
+    business_owners = models.ManyToManyField(BusinessUser, through='Ownership')
+    individual_owners = models.ManyToManyField(User, through='Ownership')
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created"]
 
     def __str__(self):
-        if self.is_business_user:
-            return str(self.business_user)
-        else:
-            return str(self.user)
+        return self.name
 
 
 class Ownership(models.Model):
-    is_founder = models.BooleanField()
+    is_founder = models.BooleanField(default=True)
+    is_business_user = models.BooleanField(default=False)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
     capital_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    business_user = models.ForeignKey(BusinessUser, null=True, blank=True, on_delete=models.CASCADE,
+                                      related_name='business_user')
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.owner)
+        if self.business_user is None:
+            return str(f"{self.user} - {self.company}")
+        else:
+            return str(f"{self.business_user} - {self.company}")
 
     class Meta:
-        unique_together = ["company", "owner"]
+        unique_together = ["company", "user", "business_user"]

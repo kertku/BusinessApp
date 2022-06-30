@@ -1,20 +1,15 @@
 {% extends 'main.html' %}
-
-
-
 {% block content %}
-
-
-    <div class="form-group">
-        <form method="post" action="">
-            {% csrf_token %}
-            {{ company_form.as_p }}
-            {{ user_form.as_p }}
-            {{ ownership_form.as_p }}
-            <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-        </form>
+    <div>
+        <div class="form-group w-50 p-3">
+            <form method="post" action="">
+                {% csrf_token %}
+                {{ create_company_form.as_p }}
+                {{ create_ownership_form.as_p }}
+                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+            </form>
+        </div>
     </div>
-
 
 {% endblock content %}
 

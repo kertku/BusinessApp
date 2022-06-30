@@ -1,44 +1,56 @@
-from django.shortcuts import render, redirect
-from base.forms import CompanyForm, UserForm, OwnerForm, OwnershipForm
-from base.models import Company, Ownership, Owner
+from django.db.models import Q
+from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
+from base.forms import CreateCompany, OwnershipForm
+from base.models import Company, Ownership, User
+from django.forms.formsets import BaseFormSet
 
 
-def business(request):
-    businesses = Company.objects.all()
-    context = {"businesses": businesses}
-    return render(request, "base/businesses.html", context)
+def home(request):
+    new_entries = Company.objects.all()[:10]
+    new_updates = Company.objects.order_by("-updated")[:10]
+    context = {"new_entries": new_entries, "new_updates": new_updates}
+    return render(request, "base/home.html", context)
 
 
 def company(request, pk):
-    company_object = Company.objects.get(pk=pk)
-    ownerships = Ownership.objects.filter(company_id=pk).all()
-    context = {"company": company_object, "ownerships": ownerships}
+    try:
+        company_object = Company.objects.get(pk=pk)
+        owning_details = Ownership.objects.filter(company__id=pk)
+        context = {"company": company_object, "owning_details": owning_details}
+    except Company.DoesNotExist:
+        raise Http404
     return render(request, "base/company.html", context)
 
 
-def company_form(request):
-    company_form = CompanyForm()
-    user_form = UserForm()
-    ownership_form = OwnershipForm()
-    owner_form = OwnerForm()
+class AddUserFormset(BaseFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+
+
+def company_form(request, ):
+    create_company_form = CreateCompany()
+    create_ownership_form = OwnershipForm()
     if request.method == 'POST':
-        company_form = CompanyForm(request.POST)
-        user_form = UserForm(request.POST)
-        ownership_form = OwnershipForm(request.POST)
-        if company_form.is_valid() and user_form.is_valid():
+        company_form = CreateCompany(request.POST or None)
+        create_ownership_form = OwnershipForm(request.POST or None)
+        if company_form.is_valid():
             new_company = company_form.save()
-            new_user = user_form.save()
-            owner_form.user = new_user
-            new_owner = owner_form.save(False)
-            new_owner.is_business_user = False
-            new_owner.user = new_user
-            new_owner.save()
-            new_ownership = ownership_form.save(False)
-            new_ownership.owner = new_owner
-            new_ownership.company = new_company
-            new_ownership.is_founder = True
-            new_ownership.save()
+            ownership = create_ownership_form.save(commit=False)
+            ownership.is_business_user = False
+            ownership.company = new_company
+            ownership.is_founder = True
+            ownership.save()
             return redirect("company", pk=new_company.id)
-    context = {"company_form": company_form, "user_form": user_form, "ownership_form": ownership_form,
-               "owner_form": owner_form}
+    context = {"create_company_form": create_company_form, "create_ownership_form": create_ownership_form, }
     return render(request, "base/company_form.html", context)
+
+
+def search(request):
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
+    search_result = Company.objects.filter(
+        Q(name__icontains=q) | Q(registry_number__icontains=q) | Q(individual_owners__first_name__icontains=q) | Q(
+            individual_owners__identification_code__icontains=q)).distinct()
+    context = {"search_result": search_result, "q": q}
+    return render(request, "base/search.html", context)

@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = "*"
 extends = "*"
-
+self = "*"
 
 [requires]
 python_version = "3.10"

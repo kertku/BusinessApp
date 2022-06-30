@@ -1,38 +1,45 @@
 {% extends "main.html" %}
 
 {% block content %}
-
-    <div class="card" style="width: 18rem;">
+    {% include '__back_to_home_partial.html' %}
+    <div class="card" style="width: 30rem;">
         <div class="card-header">
-            {{ company.name }}
+            <b>{{ company.name }}</b>
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Registry number: {{ company.registry_number }} </li>
             <li class="list-group-item">Established: {{ company.establishment_date }} </li>
-            <li class="list-group-item">Total capital : {{ company.total_capital }}</li>
+            <li class="list-group-item">Total capital : {{ company.total_capital }} €</li>
 
+        </ul>
+        <div>{{ company.company.registry_number }}</div>
 
+        <ul class="list-group list-group-flush">
 
-                <div>{{ company.company.registry_number }}</div>
+            <div class="card-header">
+                <b> Owners:</b>
+            </div>
 
-                    <ul class="list-group list-group-flush">
-                    <p class="card" style="width: 18rem;">
-        <div class="card-header">
-            Owners:
-        </div>
-                    {% for ownership in ownerships %}
-                        {% if  ownership.owner.business_user == None %}
-                    <li class="list-group-item"><b>Name: {{ ownership.owner }} </b> </li>
-                    <li class="list-group-item">Identification code: {{ ownership.owner.identification_code }} </li>
+            {% for detail in owning_details %}
+                {% if detail.business_user %}
+                    <li class="list-group-item"><b>Company: {{ detail.business_user.business_user_name }}</b></li>
+                    <li class="list-group-item">Registry code: {{ detail.business_user.registry_number }}</li>
                 {% else %}
-                   <li class="list-group-item"><b>Name: {{ ownership.owner }}</b> </li>
-                    <li class="list-group-item">Registry code: {{ ownership.owner.registry_number }} </li>
+                    <li class="list-group-item"><b>Individual: {{ detail.user }}</b></li>
+                    <li class="list-group-item">Identification code: {{ detail.user.identification_code }}</li>
                 {% endif %}
+                <li class="list-group-item"> Share capital: {{ detail.capital_size }} €</li>
+                {% if detail.is_founder %}
+                    <li class="list-group-item">The owner is a founding member.</li>
 
+                {% else %}
+                    <li class="list-group-item">The owner is not a founding member.</li>
+
+                {% endif %}
             {% endfor %}
-            </ul>
-    </div>
+        </ul>
 
+    </div>
 
 
 
