@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.forms import modelformset_factory
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from base.forms import CreateCompany, OwnershipForm
@@ -23,27 +24,25 @@ def company(request, pk):
     return render(request, "base/company.html", context)
 
 
-class AddUserFormset(BaseFormSet):
-    def clean(self):
-        if any(self.errors):
-            return
-
-
 def company_form(request, ):
+    OwnershipFormset = modelformset_factory(Ownership, form=OwnershipForm, extra=1)
     create_company_form = CreateCompany()
-    create_ownership_form = OwnershipForm()
+    formset = OwnershipFormset()
+    # create_ownership_form = OwnershipForm()
     if request.method == 'POST':
+        formset = OwnershipFormset(request.POST or None)
         company_form = CreateCompany(request.POST or None)
-        create_ownership_form = OwnershipForm(request.POST or None)
+        # create_ownership_form = OwnershipForm(request.POST or None)
         if company_form.is_valid():
             new_company = company_form.save()
-            ownership = create_ownership_form.save(commit=False)
-            ownership.is_business_user = False
-            ownership.company = new_company
-            ownership.is_founder = True
-            ownership.save()
+            for form in formset:
+                ownership = form.save(commit=False)
+                ownership.is_business_user = False
+                ownership.company = new_company
+                ownership.is_founder = True
+                ownership.save()
             return redirect("company", pk=new_company.id)
-    context = {"create_company_form": create_company_form, "create_ownership_form": create_ownership_form, }
+    context = {"create_company_form": create_company_form, 'formset': formset}
     return render(request, "base/company_form.html", context)
 
 
