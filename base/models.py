@@ -24,7 +24,8 @@ class BusinessUser(models.Model):
 class Company(models.Model):
     name = models.CharField(max_length=100,
                             validators=[MaxLengthValidator(100), MinLengthValidator(3)])
-    registry_number = models.PositiveIntegerField(validators=[Validators.validate_correct_registry_number])
+    registry_number = models.PositiveIntegerField(default=date.today(),
+                                                  validators=[Validators.validate_correct_registry_number])
     establishment_date = models.DateField(validators=[Validators.validate_not_future_date])
     total_capital = models.PositiveIntegerField(validators=[MinValueValidator(2500)])
     business_owners = models.ManyToManyField(BusinessUser, through='Ownership')

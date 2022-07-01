@@ -3,8 +3,7 @@ from django.forms import modelformset_factory
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from base.forms import CreateCompany, OwnershipForm
-from base.models import Company, Ownership, User
-from django.forms.formsets import BaseFormSet
+from base.models import Company, Ownership
 
 
 def home(request):
@@ -24,24 +23,21 @@ def company(request, pk):
     return render(request, "base/company.html", context)
 
 
-def company_form(request, ):
-    OwnershipFormset = modelformset_factory(Ownership, form=OwnershipForm, extra=1)
-    create_company_form = CreateCompany()
-    formset = OwnershipFormset()
-    # create_ownership_form = OwnershipForm()
-    if request.method == 'POST':
-        formset = OwnershipFormset(request.POST or None)
-        company_form = CreateCompany(request.POST or None)
-        # create_ownership_form = OwnershipForm(request.POST or None)
-        if company_form.is_valid():
-            new_company = company_form.save()
-            for form in formset:
-                ownership = form.save(commit=False)
-                ownership.is_business_user = False
-                ownership.company = new_company
-                ownership.is_founder = True
-                ownership.save()
-            return redirect("company", pk=new_company.id)
+def company_form(request):
+    OwnershipFormset = modelformset_factory(Ownership, form=OwnershipForm, extra=2)
+    create_company_form = CreateCompany(request.POST or None)
+    new_company = create_company_form.save(False)
+    queryset = Ownership.objects.filter(company=new_company)
+    formset = OwnershipFormset(request.POST or None, queryset=queryset)
+    if create_company_form.is_valid():
+        new_company = create_company_form.save()
+        ownerships = formset.save(commit=False)
+        for ownership in ownerships:
+            ownership.is_business_user = False
+            ownership.company = new_company
+            ownership.is_founder = True
+            ownership.save()
+        return redirect("company", pk=new_company.id)
     context = {"create_company_form": create_company_form, 'formset': formset}
     return render(request, "base/company_form.html", context)
 
