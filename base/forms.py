@@ -18,10 +18,10 @@ class UserForm(ModelForm):
 class OwnershipForm(ModelForm):
     class Meta:
         model = Ownership
-        fields = ('capital_size', 'user',)
+        fields = ('user', 'capital_size',)
         widgets = {
-            'user': forms.Select(attrs={'class': 'form-group row'}),
-            "capital_size": forms.NumberInput(attrs={'class': 'form-group row'}),
+            'user': forms.Select(attrs={'class': 'form-control'}),
+            "capital_size": forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 

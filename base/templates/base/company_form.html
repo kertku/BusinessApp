@@ -4,8 +4,12 @@
         <div class="form-group w-50 p-3">
             <form method="post" action="">
                 {% csrf_token %}
-                {{ create_company_form.as_p }}
-                {{ create_ownership_form.as_p }}
+                {{ create_company_form.as_table }}
+                Add owners:
+                <br/>
+                {% for form in formset %}
+                    {{ form.as_table }}
+                {% endfor %}
                 <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
             </form>
         </div>
