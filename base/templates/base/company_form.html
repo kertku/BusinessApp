@@ -1,22 +1,47 @@
 {% extends 'main.html' %}
+{% load static %}
+<script src="{% static 'js/addInputFiled.js' %}"></script>
 {% block content %}
+
     {% include '__back_to_home_partial.html' %}
     <div>
         <div class="form-group w-50 p-3">
             <form method="post" action="">
                 {% csrf_token %}
                 {{ create_company_form.as_table }}
-                Add owners:
-                <br/>
-                {{ formset.management_form }}
-                {% for form in formset %}
-                    {{ form.as_table }}
-                {% endfor %}
-                <div>{{ formset.empty_form.as_table }}</div>
+                <div class="container">
+                    {{ formset.management_form }}
+                    <div class="row">
+                        <div class="col-sm">
+                            Add owners:
+                            <br/>
+                            <div id="user_owners">
+                            {{ formset.management_form }}
+                            {% for form in formset %}
+                                {{ form.as_table }}
+                            {% endfor %}
+                            </div>
+                        <div id='empty-form' class='hidden'>{{ formset.empty_form.as_p }}</div>
+                        <button id='add-more-users' type='button'>More users</button>
+                        </div>
+                        <div class="col-sm">
+                            Add Business Owner:
+                            <br/>
+                            {% for form in business_formset %}
+                                {{ form.as_table }}
+                            {% endfor %}
+                        <button id='add-more-business-users' type='button'>More business users</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id='empty-form' class='hidden'>{{ formset.empty_form.as_p }}</div>
                 <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
             </form>
         </div>
     </div>
+
 
 {% endblock content %}
 

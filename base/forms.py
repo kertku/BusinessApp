@@ -25,6 +25,16 @@ class OwnershipForm(ModelForm):
         }
 
 
+class BusinessOwnershipForm(ModelForm):
+    class Meta:
+        model = Ownership
+        fields = ('business_user', 'capital_size',)
+        widgets = {
+            'business_user': forms.Select(attrs={'class': 'form-control'}),
+            "capital_size": forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
 class BusinessUserForm(ModelForm):
     class Meta:
         model = BusinessUser
